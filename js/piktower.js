@@ -1,0 +1,448 @@
+'use strict';
+
+const ctxcr = document.getElementById('chara').getContext('2d');
+const ctxfi = document.getElementById('field').getContext('2d');
+const pllog = document.getElementById('playlog');
+
+ctxcr.mozImageSmoothingEnabled = false;
+ctxcr.webkitImageSmoothingEnabled = false;
+ctxcr.sImageSmoothingEnabled = false;
+ctxcr.imageSmoothingEnabled = false;
+
+const imgCrPink =new Image();
+const imgCrEnemy =new Image();
+const imgFi =new Image();
+imgCrPink.src = 'pinkchan.png';
+imgCrEnemy.src = 'pikmin.png';
+imgFi.src = 'rpgfield.png';
+const seWalk = new Audio('snowball-hit1.mp3');
+const seData = new Audio('cursor1.mp3');
+const seKill = new Audio('swordman-damage2.mp3');
+
+
+const wanime = [0,1,2,1];
+const dpos = [[1,0],[-1,0],[0,1],[0,-1]];
+
+let stage = []
+let enep = []
+let en = []
+let timer = 0;
+let steps = 0;
+let floors = 1;
+let endfrag = 0;
+let kill = 0;
+
+let keydown = [];
+let smafo = [];
+
+function iDiv(a,b){
+	return Math.floor(a/b);
+}
+
+function mes(type,others){
+	let mtext
+	switch(type){
+		case 0:
+mtext = `ピクタワーの頂上には時価1兆円くらいするお宝がある
+―――そんなもっぱらのうわさ
+あなたは噂につられて塔に足を踏み入れた冒険者
+居座るライバルたちを蹴落としお宝を手に入れるのだ
+(Lv : ${pl.state[0]} Ex : ${pl.state[1]} HP : ${pl.state[2]} At : ${pl.state[3]})`
+		break;
+		case 1:
+mtext = `あなたは他の冒険者に出会った
+(　＾ϖ＾)「ちゃ～」 (${pl.state[2]} - ${iDiv(others,pl.state[3])})`
+		break
+		case 2:
+mtext = `あなたは他の冒険者をぶちのめした
+(Lv : ${pl.state[0]} Ex : ${pl.state[1]} HP : ${pl.state[2]} At : ${pl.state[3]})`
+		break
+		case 3:
+mtext = `あなたは力尽きた……
+(Floor : ${floors} Kill : ${kill})
+(Lv : ${pl.state[0]} Ex : ${pl.state[1]} HP : ${pl.state[2]} At : ${pl.state[3]})
+END`
+		break
+		case 4:
+mtext = `        Lv UP !!!
+(Lv : ${pl.state[0]} Ex : ${pl.state[1]} HP : ${pl.state[2]} At : ${pl.state[3]})`
+		break
+		case 5:
+mtext = `あなたは ${floors} 階に到達した`
+		break
+		case 6:
+mtext = `あなたはついにピクタワーの頂上に到達した
+(Floor : ${floors} Kill : ${kill})
+(Lv : ${pl.state[0]} Ex : ${pl.state[1]} HP : ${pl.state[2]} At : ${pl.state[3]})
+END`
+		break
+	}
+	let a = steps+""
+	a = a.replace(/\d/g, " ")
+	mtext = mtext.replace(/\n/g, "\n"+a+"      ");
+	pllog.value +=`${steps}歩目：${mtext}\n`
+	pllog.scroll(0, pllog.scrollHeight)
+}
+function sound(src){
+	src.currentTime =0;
+	src.play();
+}
+
+function onKeyDown(e){
+	e.preventDefault();
+	switch(e.key){
+		case 'ArrowLeft':
+		keydown[0]=true;
+		break;
+		case 'ArrowRight':
+		keydown[1]=true;
+		break;
+		case 'ArrowUp':
+		keydown[2]=true;
+		break;
+		case 'ArrowDown':
+		keydown[3]=true;
+		break;
+	}
+}
+
+function onKeyUp(e){
+	switch(e.key){
+		case 'ArrowLeft':
+		keydown[0]=false;
+		break;
+		case 'ArrowRight':
+		keydown[1]=false;
+		break;
+		case 'ArrowUp':
+		keydown[2]=false;
+		break;
+		case 'ArrowDown':
+		keydown[3]=false;
+		break;
+	}
+}
+
+window.addEventListener('keydown',onKeyDown,false);
+window.addEventListener('keyup',onKeyUp,false);
+
+smafo[0] = document.querySelectorAll('button')[0];
+smafo[1] = document.querySelectorAll('button')[1];
+smafo[2] = document.querySelectorAll('button')[2];
+smafo[3] = document.querySelectorAll('button')[3];
+
+for (let i=0;i<4;i++){
+	smafo[i].addEventListener("touchstart", function(){
+	keydown[i]=true;
+}, false);
+	smafo[i].addEventListener("touchend", function(){
+	keydown[i]=false;
+}, false);
+}
+
+function random(max,min=0){
+	return Math.floor(Math.random()*(max-min)+min)
+}
+
+function anahori(stage,y,x){
+	let i = 0;
+	let ana = [];
+	ana.push([x,y]);
+	let a = ana[random(ana.length)]
+	while (i<1000){
+		let d = dpos[random(4)]
+		let dx = d[0]
+		let dy = d[1]
+		x += dx
+		y += dy
+		if (stage[y+1][x]+stage[y-1][x]+stage[y][x+1]+stage[y][x-1]>=3){
+			stage[y][x] = 0;
+			ana.push([x,y])
+		}else{
+			let a = ana[random(ana.length)]
+			x = a[0]
+			y = a[1]
+		}
+		i++
+	}
+	a = ana[ana.length-1]
+	x = a[0]
+	y = a[1]
+	stage[y][x] = 2;
+	return stage;
+}
+
+function makestage(x,y){
+	stage = [
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	]
+	stage[y][x] = 0;
+	stage = anahori(stage,y,x);
+}
+
+function field(){
+	for (let i=0;i<10;i++){
+		for (let j=0;j<10;j++){
+			let a = stage[j+2][i+2]
+			ctxfi.drawImage(imgFi,a*32,0,32,32,i*32,j*32,32,32)
+		}
+	}
+}
+
+class Enemy {
+	constructor(x, y, vx, vy, anime, sysstate, state){
+		//x,yは左上が0, -32*10
+		//anime = [キャラ番号(0-7),向き(0-3),状態(0-3)]
+		//sysstate = [移動クールタイムx,敵に接触,]
+		//state = [Lv,exp,HP,atk]
+		this.x = x
+		this.y = y
+		this.vx = vx
+		this.vy = vy
+		this.anime = anime
+		this.sysstate = sysstate
+		this.state = state
+	}
+	draw(){
+		if (this.sysstate[0]%16 === 8){
+			this.anime[2] = (this.anime[2]+1)%4
+		}
+		let p = [this.anime[0]%4*72 + wanime[this.anime[2]]*24, iDiv(this.anime[0],4)*128 + this.anime[1]*32]
+		ctxcr.drawImage(imgCrEnemy,p[0],p[1],24,32,this.x-8,this.y-32,48,64)
+	}
+}
+
+class Player {
+	constructor(x, y, vx, vy, anime, sysstate, state){
+		//x,yは左上が0, -32*10
+		//anime = [キャラ番号(0-7),向き(0-3),状態(0-3)]
+		//sysstate = [移動クールタイムx,移動クールタイムy]
+		//
+		this.x = x
+		this.y = y
+		this.vx = vx
+		this.vy = vy
+		this.anime = anime
+		this.sysstate = sysstate
+		this.state = state
+	}
+	draw(){
+		if (this.sysstate[0]%16 === 8){
+			this.anime[2] = (this.anime[2]+1)%4
+		}
+		if (this.sysstate[0]%32 === 8){
+			sound(seWalk)
+			steps++
+		}
+		let p = [this.anime[0]%4*72 + wanime[this.anime[2]]*24, iDiv(this.anime[0],4)*128 + this.anime[1]*32]
+		ctxcr.drawImage(imgCrPink,p[0],p[1],24,32,this.x-8,this.y-32,48,64)
+	}
+	control(){
+		if (this.sysstate[0] <= 0){
+			this.vx = 0
+			this.vy = 0
+			this.anime[2] = iDiv(this.anime[2],2)*2+1
+			if (keydown[0]){
+				this.vx = -2
+				this.sysstate[0] = 32
+				this.anime[1] = 3
+			}
+			if (keydown[1]){
+				this.vx = 2
+				this.sysstate[0] = 32
+				this.anime[1] = 1
+			}
+			if (keydown[2]){
+				this.vy = -2
+				this.sysstate[0] = 32
+				this.anime[1] = 0
+			}
+			if (keydown[3]){
+				this.vy = 2
+				this.sysstate[0] = 32
+				this.anime[1] = 2
+			}
+			if (this.sysstate[1]%4 !== this.anime[1]){
+				this.sysstate[1] = 0
+			}
+			if (this.sysstate[0] !== 32){
+				if (this.sysstate[1] >= 100){
+					this.sysstate[1] += 900
+				}
+			}
+		}
+		let i = 0
+		let xt = iDiv(this.x+this.vx*8.1+16,32)+2
+		let yt = iDiv(this.y+this.vy*8.1+16,32)+2
+		let xt2 = iDiv(this.x+16,32)+2
+		let yt2 = iDiv(this.y+16,32)+2
+		if (stage[yt][xt]===1){
+			this.vx = 0
+			this.vy = 0
+			this.sysstate[0] = 0
+		}
+		if (stage[yt2][xt]===1 && stage[yt][xt2]===1){
+			this.vx = 0
+			this.vy = 0
+			this.sysstate[0] = 0
+		}
+		while (i<enep.length){
+			if (enep[i][0] === xt-2 && enep[i][1] === yt-2){
+				this.vx = 0
+				this.vy = 0
+				this.sysstate[0] = 0
+				if (this.sysstate[1] === 0){
+					this.sysstate[1] = this.anime[1]+100
+					mes(1,en[i].state[3])
+					en[i].anime[1] = (pl.anime[1]+2)%4
+					sound(seData)
+				}
+				if (this.sysstate[1] >= 1000){
+					pl.state[2] -= iDiv(en[i].state[3],pl.state[3])
+					pl.state[1] += iDiv(en[i].state[3],5) - pl.state[0]*5
+					this.sysstate[1] = 0
+					if (pl.state[2] <= 0){
+						mes(3)
+						endfrag = 1
+					}else{
+						mes(2)
+						while (pl.state[1] >= 100){
+							let a = iDiv(pl.state[1], 100)
+							pl.state[0] += a
+							pl.state[1] -= a*100
+							pl.state[3] += a
+							mes(4)
+						}
+						enep.splice(i,1)
+						en.splice(i,1)
+						kill += 1
+						sound(seKill)
+					}
+				}
+			}
+			i++
+		}
+		if (stage[yt2][xt2]===2){
+			floors++
+			pl.state[2] = 100;
+			mes (5)
+			newfloor(xt2,yt2);
+		}
+		this.x += this.vx
+		this.y += this.vy
+		this.sysstate[0] -= 2
+	}
+};
+
+const pl = new Player(0,288,0,0,[7,0,1],[0,0,0],[1,0,100,10])
+
+function enemyplace(){
+	let i = 0
+	while (i <5){
+		let x = random(12,2)
+		let y = random(12,2)
+		let found = false
+		if (iDiv(iDiv(pl.x+80,32)-x,2)===0 && iDiv(iDiv(pl.y+80,32)-y,2)===0){continue}
+		if (stage[y][x] === 0){
+			let j = 0
+			while (j < enep.length){
+				if (x-2 === enep[j][0] && y-2 === enep[j][1]){found = true}
+				j++
+			}
+			if (!found){
+				enep.push([x-2,y-2])
+			}
+			i++
+		}
+	}
+	enep.sort(function (a, b) {
+		return a[1] - b[1];
+	});
+}
+
+function loop(){
+	pl.control()
+	ctxcr.clearRect(0,0,320,320)
+	let pldrawed = false;
+	let i = 0;
+	while (i<enep.length){
+		if (en[i].y >= pl.y && !(pldrawed)){
+			pl.draw()
+			pldrawed = true;
+		}
+		en[i].draw()
+		i++
+	}
+	if (!(pldrawed)){pl.draw()};
+	timer++
+	if (!endfrag){
+		window.requestAnimationFrame(loop);
+	}
+}
+
+
+function newfloor(x,y){
+	ctxfi.clearRect(0,0,320,320)
+	stage = []
+	enep = []
+	en = []
+	if (floors === 21){
+		stage = [
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,3,3,3,3,3,3,3,3,3,3,1,0],
+		[0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		]
+		stage[y][x] = 0;
+		field();
+		mes(6)
+	}else{
+		makestage(x,y);
+		field();
+		enemyplace();
+	}
+	let i = 0;
+	while (i<enep.length){
+		let a = [] //[キャラ番号,戦闘力]
+		switch(random(2)){
+			case 0:
+			a = [4,200+(floors-1)*40]
+			break;
+			case 1:
+			a = [0,400+(floors-1)*60]
+			break;
+		}
+		en[i] = new Enemy(enep[i][0]*32,enep[i][1]*32,0,0,[a[0],random(4),1],[0,0],[0,0,0,a[1]])
+		i++
+	}
+	
+}
+
+imgFi.onload = function(){
+	newfloor(2,11);
+	loop();
+	mes(0)
+}

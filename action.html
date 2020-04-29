@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>action</title>
+	</head>
+
+	<body>
+		<h1>アクションゲーム</h1>
+		<div id="game">
+		<canvas id="stagefg" width="640" height="480"></canvas>
+		<canvas id="player" width="640" height="480"></canvas>
+		<canvas id="enemy" width="640" height="480"></canvas>
+		<canvas id="needle" width="640" height="480"></canvas>
+		<canvas id="stagebg" width="640" height="480"></canvas>
+		</div>
+		<hr>
+		<div>
+		<button>←</button><button>→</button><button>R</button><button>↑</button>
+		<hr>
+		<p>←→：移動</p>
+		<p>Z・↑：ジャンプ（2回）</p>
+		<p>R:リトライ</p>
+		<style>
+		body{
+			background-color:#ccc;
+		font:16px'MS PGothic';
+		}
+		button{
+			width: 160px;
+			height: 160px;
+			display: inline;
+		}
+		
+		
+		#game {
+			width: 640px;
+			height: 480px;
+			position: relative;
+			border: 2px solid black;
+			background-image: url("acbg.gif");
+			background-color: rgba(0,0,0,.5);
+			background-blend-mode:multiply;
+		}
+
+		canvas { position: absolute; }
+		#stagefg { z-index: 5; }
+		#player { z-index: 4; }
+		#enemy { z-index: 3; }
+		#needle { z-index: 2; }
+		#stagebg { z-index: 1; }
+		</style>
+		<hr>
+		<p><a href="index.html">トップページ</a></p>
+		<script src="action.js">
+		</script>
+	</body>
+</html>
