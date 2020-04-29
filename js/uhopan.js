@@ -96,9 +96,9 @@ function kakiko(name,mail,msg){
 	let time=nowtime();
 	let id=Math.random().toString(36).slice(-9);
 	let header = document.createElement('p');
-	header.textContent = `${resnumber} 名前:${name} ${mail} ${time} ID:${id}`;
+	header.innerHTML = `<a id=res${resnumber}>${resnumber} 名前:${name} ${mail} ${time} ID:${id}</a>`;
 	let message = document.createElement('p');
-	message.textContent = msg;
+	message.innerHTML = msg.replace(/\n/g,'<br>');
 	section.appendChild(header);
 	section.appendChild(message);
 	resnumber++;
