@@ -16,6 +16,7 @@ const encodelist = {
 	"ゃ":"パンティちゃキムタク",
 	"ゅ":"パンティちゃっキムタク",
 	"ょ":"パンティぢゃっキムタク",
+	"ゎ":"パンティちゃPINK",
 	
 	"が":"ちゃぢゃーPPfacerightPP",
 	"ぎ":"ちゃーぢゃーPPfacerightPP",
@@ -89,6 +90,7 @@ const encodelist = {
 	"わ":"ちゃPINK",
 	"ゐ":"ちゃーPINK",
 	"ゑ":"ちゃあPINK",
+	"を":"ぢゃっPINK",
 	"ん":"ミッシングスウェルポケット",
 	
 	"end":"end"
@@ -114,6 +116,8 @@ function decode(){
 	for (const key of Object.keys(encodelist)){
 		result = result.replace(new RegExp(encodelist[key],"g"),key);
 	}
+	result = result.replace(new RegExp("PPfacerightPP","g"),"(　＾ϖ＾)");
+	result = result.replace(new RegExp("PPfaceleftPP","g"),"(＾ϖ＾　)");
 	hira.value = result;
 }
 

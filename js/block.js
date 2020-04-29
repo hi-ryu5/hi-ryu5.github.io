@@ -12,9 +12,9 @@ const inp = document.querySelector('input');
 const btn = document.querySelectorAll('button')[0];
 
 const imgbl =new Image();
-imgbl.src = 'block.gif';
-const sePoint = new Audio('swordman-damage2.mp3');
-const seCollision = new Audio('cursor7.mp3');
+imgbl.src = 'pic/block.gif';
+const sePoint = new Audio('sound/swordman-damage2.mp3');
+const seCollision = new Audio('sound/cursor7.mp3');
 
 let start = false
 let blockObj,blockArray,pl,ba

@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>action</title>
+		<link rel="stylesheet" href="css/standard.css">
 	</head>
 
 	<body>
@@ -22,14 +23,11 @@
 		<p>Z・↑：ジャンプ（2回）</p>
 		<p>R:リトライ</p>
 		<style>
-		body{
-			background-color:#ccc;
-		font:16px'MS PGothic';
-		}
 		button{
 			width: 160px;
 			height: 160px;
 			display: inline;
+			-webkit-user-select:none;
 		}
 		
 		
@@ -38,7 +36,7 @@
 			height: 480px;
 			position: relative;
 			border: 2px solid black;
-			background-image: url("acbg.gif");
+			background-image: url("pic/acbg.gif");
 			background-color: rgba(0,0,0,.5);
 			background-blend-mode:multiply;
 		}
@@ -51,8 +49,9 @@
 		#stagebg { z-index: 1; }
 		</style>
 		<hr>
+		<p>効果音： 効果音ラボ</p>
+		<hr>
 		<p><a href="index.html">トップページ</a></p>
-		<script src="action.js">
-		</script>
+		<script src="js/action.js"></script>
 	</body>
 </html>

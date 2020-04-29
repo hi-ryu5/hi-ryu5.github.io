@@ -8,15 +8,32 @@ const ctxsb = document.getElementById('stagebg').getContext('2d');
 
 const imgpl =new Image();
 const imgbl =new Image();
-imgpl.src = 'acplayer.gif';
-imgbl.src = 'acblock.gif';
+const imgendi = new Image();
+imgpl.src = 'pic/acplayer.gif';
+imgbl.src = 'pic/acblock.gif';
+imgendi.src = 'pic/acdick.gif';
+const seJump = new Audio('sound/cursor7.mp3');
 
 let death=0;
 let pushingkey=[];
+pushingkey[21] = 0
 let cdeltime = 0;
+let stageN = 0
+let saved = false;
+let en = []
 
 let keydown=[];
 let smafo = [];
+
+function bltype(x, y){
+	({x,y} = pos(x,y))
+	return bl[y][x].type
+}
+function pos(x,y){
+	x = Math.floor(x/32)
+	y = Math.floor(y/32)
+	return {x,y}
+}
 
 function stagedata(stNo){
 	let stdata=""
@@ -31,22 +48,24 @@ function stagedata(stNo){
 `
 aaaaaaaaaaaaaaaaaaaa
 a..................a
+aaaa..aaa..aaa..aaaa
 a..................a
 a..................a
+aaaa..aaa..aaa..aaaa
 a..................a
 a..................a
+aaaa..aaa..aaa..aaaa
 a..................a
 a..................a
+aaaa..aaa..aaa..aaaa
 a..................a
-a..................a
-a....w.....w.......a
-a...aaa...aaa......a
-a..................a
-a..................a
+a......w....w......a
 aaaaaaaaaaaaaaaaaaaa
 `
 		break;
 		case 1:
+		pl=new Player(48,415.9,0,0,[0,3,0],[0,0]);
+		retry=[48,415.9];
 		stdata=
 `
 aaaaaaaaaaaaaaaaaaaa
@@ -64,6 +83,32 @@ a...........aa.....a
 a..................a
 a................s.a
 aaaaaabbbbbbaaaaaaaa
+`
+		break;
+		case 2:
+		pl=new Player(48,415.9,0,0,[0,3,0],[0,0]);
+		retry=[48,415.9];
+		en.push(new Enemy(224,304,-1.5,0,[0,1,0],[imgendi,48]))
+		en.push(new Enemy(512,400,-1.5,0,[0,1,0],[imgendi,48]))
+		en.push(new Enemy(512,304,-1.5,0,[0,1,0],[imgendi,48]))
+		en.push(new Enemy(352,80,-1.5,0,[0,1,0],[imgendi,48]))
+		stdata=
+`
+aaaaaaaaaaaaaaaaaaaa
+ag.................a
+aa.b.a.b.a.........a
+a..................a
+a...........baaaab.a
+a..................a
+a..................a
+a...........bs..a..a
+a...........da.....a
+a...........d......a
+a...........d......a
+a...aaaaa...daaaaa.a
+a...aaaaa..........a
+a...aaaaa..........a
+aaaaaaaaaaaaaaaaaaaa
 `
 		break;
 	}
@@ -172,6 +217,9 @@ const die = function(){
 	pl.y=retry[1];
 	pushingkey[20]=1;
 	death++
+	if (!saved){
+		timer = 0
+	}
 }
 
 function Chara(x,y,vx,vy,anime) {
@@ -191,6 +239,36 @@ function Block(x,y,vx,vy,anime,type) {
 		}
 		let a = this.anime[0] + this.anime[2]
 		ctxsb.drawImage(imgbl,a%10*32,Math.floor(a/10)*32,32,32,this.x,this.y,32,32);
+	}
+}
+
+function Enemy(x,y,vx,vy,anime,type) {
+	Chara.call(this,x,y,vx,vy,anime);
+	this.type = type//[画像の種類,サイズ]
+	this.draw=function(){
+		this.x+=this.vx
+		this.y+=this.vy
+		if (timer%6===1){
+			this.anime[2]=(this.anime[2]>=this.anime[0]+this.anime[1])?this.anime[0]:this.anime[2]+1;
+		}
+		ctxen.drawImage(this.type[0],this.anime[2]%2*this.type[1],Math.floor(this.anime[2]/2)*this.type[1],this.type[1],this.type[1],this.x,this.y,this.type[1],this.type[1]);
+	}
+	this.move = function (){
+		this.vy += 2
+		let a = bltype(this.x+this.vx*this.type[1]/2+this.type[1]/2, this.y+this.vy+this.type[1])
+		if (a%10 === 1){
+			this.vy = 0
+		}else{
+			this.vx = -this.vx
+			this.vy = 0
+			this.anime[0] = (this.anime[0]+2)%4
+		}
+		a = bltype(this.x+this.vx*this.type[1]/2+this.type[1]/2, this.y)
+		if (a%10 === 1){
+			this.vx = -this.vx
+			this.vy = 0
+			this.anime[0] = (this.anime[0]+2)%4
+		}
 	}
 }
 
@@ -225,6 +303,8 @@ function Player(x,y,vx,vy,anime,state) {
 				this.state[1]-=1;
 			}
 			if (this.state[0]<=this.state[1]*2.5 && pushingkey[0]===1){
+				seJump.currentTime =0;
+				seJump.play();
 				this.vy=-6;
 				this.state[0]++
 			}
@@ -245,10 +325,8 @@ function Player(x,y,vx,vy,anime,state) {
 		}
 	}
 	this.block=function(){
-		function bltype(x, y){
-			return bl[Math.floor(y/32)][Math.floor(x/32)].type
-		}
-		if (bltype(this.x+16, this.y+16)===10){
+		let a = bltype(this.x+16, this.y+16)
+		if (a === 10){
 			if(pushingkey[20]===0){
 				retry=[this.x,this.y]
 				pushingkey[20]=1;
@@ -257,17 +335,32 @@ function Player(x,y,vx,vy,anime,state) {
 				ctxsf.textAlign = "center";
 				ctxsf.fillText(`save`, this.x+16, this.y-5);
 				cdeltime = timer + 16
+				saved = true
 			}
 		}else{
 			pushingkey[20]=0
 		}
-		if (bltype(this.x+16, this.y+16)===20){
+		if (a ===20){
 			if(pushingkey[21]!==1){
 				retry=[this.x,this.y]
 				pushingkey[21]=1;
 			}
 		}
-		if (bltype(this.x+this.vx+16, this.y+20)%10===1){
+		if (a === 90){
+			let {x,y} = pos(this.x,this.y)
+			if (x === 6 && y === 12){
+				stageN = 1;
+				({ pl,retry,bl,timer } = stagedata(1))
+				init();
+			}
+			if (x === 11 && y === 12){
+				stageN = 2;
+				({ pl,retry,bl,timer } = stagedata(2))
+				init();
+			}
+		}
+		a = bltype(this.x+this.vx+16, this.y+20)
+		if (a%10===1){
 			if (bltype(this.x+this.vx+16, this.y+20)===31&&this.vx>0){
 				die();
 			}
@@ -276,7 +369,8 @@ function Player(x,y,vx,vy,anime,state) {
 			}
 			this.vx=0;
 		}
-		if (bltype(this.x+16, this.y+this.vy+20)%10===1){
+		a = bltype(this.x+16, this.y+this.vy+20)
+		if (a%10===1){
 			if (bltype(this.x+16, this.y+this.vy+20)===21&&this.vy<0){
 				die();
 			}
@@ -285,7 +379,8 @@ function Player(x,y,vx,vy,anime,state) {
 				this.anime=[Math.floor(this.anime[0]/4)%2*4,0,Math.floor(this.anime[0]/4)%2*4]
 			}
 		}
-		if (bltype(this.x+16, this.y+this.vy+32)%10===1){
+		a = bltype(this.x+16, this.y+this.vy+32)
+		if (a%10===1){
 			if (bltype(this.x+16, this.y+this.vy+32)===11&&this.vy>0){
 				die();
 			}
@@ -296,7 +391,8 @@ function Player(x,y,vx,vy,anime,state) {
 				this.anime=[Math.floor(this.anime[0]/4)%2*4,0,Math.floor(this.anime[0]/4)%2*4]
 			}
 		}
-		if (bltype(this.x+this.vx+16, this.y+this.vy+32)%10===1){
+		a = bltype(this.x+this.vx+16, this.y+this.vy+32)
+		if (a%10===1){
 			this.vx=0;
 		}
 		if (this.vy<0){
@@ -305,30 +401,53 @@ function Player(x,y,vx,vy,anime,state) {
 			this.anime=[Math.floor(this.anime[0]/4)%2*4+9,0,Math.floor(this.anime[0]/4)%2*4+9];
 		}
 	}
+	this.hitbox = function(){
+		let a = ctxen.getImageData(this.x,this.y,1,1)
+		if (a.data[3]>0){
+			die();
+		}
+	}
 }
-
 
 let { pl,retry,bl,timer } = stagedata(0)
 
 function loop(){
-	
-	pl.control();
-	pl.block();
-	pl.draw();
-	timer++
-	for (let i=0;i<15;i++) {
-		for (let j=0;j<20;j++) {
-			if (bl[i][j].anime[1] >0){
-				bl[i][j].draw();
+	if (pushingkey[21]===0){
+		pl.control();
+		pl.block();
+		pl.draw();
+		//pl.hitbox();
+		timer++
+		for (let i=0;i<15;i++) {
+			for (let j=0;j<20;j++) {
+				if (bl[i][j].anime[1] >0){
+					bl[i][j].draw();
+				}
 			}
+		}
+		ctxen.clearRect(0,0,640,480)
+		for (let i=0;i<en.length;i++) {
+			en[i].move();
+			en[i].draw();
+		}
+	}else{
+		if(keydown[3]){
+			({ pl,retry,bl,timer } = stagedata(0))
+			ctxsf.clearRect(0,0,640,480)
+			en = []
+			init();
+			pushingkey[21] = 0
 		}
 	}
 	if (timer === cdeltime){
 		ctxsf.clearRect(0,0,640,480)
 	}
-	if (pushingkey[21]!==1){
-		window.requestAnimationFrame(loop);
-	}else{
+	ctxsf.clearRect(0,0,640,32)
+	ctxsf.fillStyle = '#FFF';
+	ctxsf.font = "20px 'sans-serif'";
+	ctxsf.textAlign = "left";
+	ctxsf.fillText(`stage:${stageN}     time:${Math.round(timer*10/6)/100}`, 40, 20);
+	if (pushingkey[21]===1){
 		ctxsf.fillStyle = '#000';
 		ctxsf.fillRect(180,120,280,180)
 		ctxsf.fillStyle = '#FFF';
@@ -336,10 +455,14 @@ function loop(){
 		ctxsf.textAlign = "center";
 		ctxsf.fillText(`CLEAR!`, 320, 180);
 		ctxsf.fillText(`RECORD: ${Math.round(timer*10/6)/100}s`, 320, 240);
+		pushingkey[21] = 2
 	}
+	window.requestAnimationFrame(loop);
 }
 
-imgbl.onload=function(){
+function init(){
+	saved = false
+	ctxsb.clearRect(0,0,640,480)
 	for (let i=0;i<15;i++) {
 		for (let j=0;j<20;j++) {
 			bl[i][j].draw();
@@ -347,5 +470,8 @@ imgbl.onload=function(){
 	}
 }
 
+imgbl.onload=function(){
+	init();
+};
 
 loop();
