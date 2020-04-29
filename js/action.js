@@ -402,7 +402,7 @@ function Player(x,y,vx,vy,anime,state) {
 		}
 	}
 	this.hitbox = function(){
-		let a = ctxen.getImageData(this.x,this.y,1,1)
+		let a = ctxen.getImageData(this.x+16,this.y+16,1,1)
 		if (a.data[3]>0){
 			die();
 		}
@@ -416,7 +416,7 @@ function loop(){
 		pl.control();
 		pl.block();
 		pl.draw();
-		//pl.hitbox();
+		pl.hitbox();
 		timer++
 		for (let i=0;i<15;i++) {
 			for (let j=0;j<20;j++) {
