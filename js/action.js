@@ -270,6 +270,13 @@ function Enemy(x,y,vx,vy,anime,type) {
 			this.anime[0] = (this.anime[0]+2)%4
 		}
 	}
+	this.hitbox = function(){
+		let a = (pl.x+16) - (this.x+this.type[1]/2)
+		let b = (pl.y+16) - (this.y+this.type[1]/2)
+		if (Math.abs(a)*3 < this.type[1]+32 && Math.abs(b)*3 < this.type[1]+32){
+			die();
+		}
+	}
 }
 
 function Player(x,y,vx,vy,anime,state) {
@@ -401,12 +408,6 @@ function Player(x,y,vx,vy,anime,state) {
 			this.anime=[Math.floor(this.anime[0]/4)%2*4+9,0,Math.floor(this.anime[0]/4)%2*4+9];
 		}
 	}
-	this.hitbox = function(){
-		let a = ctxen.getImageData(this.x+16,this.y+16,1,1)
-		if (a.data[3]>0){
-			die();
-		}
-	}
 }
 
 let { pl,retry,bl,timer } = stagedata(0)
@@ -416,7 +417,6 @@ function loop(){
 		pl.control();
 		pl.block();
 		pl.draw();
-		pl.hitbox();
 		timer++
 		for (let i=0;i<15;i++) {
 			for (let j=0;j<20;j++) {
@@ -429,6 +429,7 @@ function loop(){
 		for (let i=0;i<en.length;i++) {
 			en[i].move();
 			en[i].draw();
+			en[i].hitbox();
 		}
 	}else{
 		if(keydown[3]){
