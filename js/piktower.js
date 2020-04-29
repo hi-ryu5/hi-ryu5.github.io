@@ -12,12 +12,12 @@ ctxcr.imageSmoothingEnabled = false;
 const imgCrPink =new Image();
 const imgCrEnemy =new Image();
 const imgFi =new Image();
-imgCrPink.src = 'pinkchan.png';
-imgCrEnemy.src = 'pikmin.png';
-imgFi.src = 'rpgfield.png';
-const seWalk = new Audio('snowball-hit1.mp3');
-const seData = new Audio('cursor1.mp3');
-const seKill = new Audio('swordman-damage2.mp3');
+imgCrPink.src = 'pic/pinkchan.png';
+imgCrEnemy.src = 'pic/pikmin.png';
+imgFi.src = 'pic/rpgfield.png';
+const seWalk = new Audio('sound/snowball-hit1.mp3');
+const seData = new Audio('sound/cursor1.mp3');
+const seKill = new Audio('sound/swordman-damage2.mp3');
 
 
 const wanime = [0,1,2,1];
