@@ -3,7 +3,7 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-let oldc,loop,level,field,Sc1,pl,timer,times,gof,endf;
+let oldc,loop,level,field,Sc1,pl,timer,times,gof,endf,kifu;
 let click = 0;
 let offsets = [];
 let numbers = [];
@@ -14,7 +14,7 @@ let fvalue = []
 const imgfa = new Image();
 const imgbo = new Image();
 const imgpi = new Image();
-imgfa.src = "pic/face.gif";
+imgfa.src = "pic/face.png";
 imgbo.src = "pic/oth_board.gif";
 imgpi.src = "pic/oth_piece.gif";
 
@@ -46,7 +46,7 @@ function Imgpi(n,x,y){
 }
 
 function Imgface(n,x,y){
-	ctx.drawImage(imgfa,(n%5)*40,div(n,5)*40,40,40,x,y,40,40);
+	ctx.drawImage(imgfa,(n%5)*100,div(n,5)*100,100,100,x,y,100,100);
 }
 
 class Scene {		//画像の表示・画像データの保持を行う
@@ -80,34 +80,64 @@ class Scene {		//画像の表示・画像データの保持を行う
 
 imgfa.addEventListener('load',title)
 
-function title(){		//タイトル
-	level = 0
+function titledp(){
 	ctx.fillStyle = "#000";
-	ctx.fillRect(0,0,480,360);
+	ctx.fillRect(0,0,600,360);
 	ctx.fillStyle = "#FFF";
-	ctx.font = "24px 'メイリオ'";
 	ctx.textAlign = "center";
-	ctx.fillText("顔グラフィック誰かよこせください", 240, 80);
-	ctx.font = "12px 'メイリオ'";
+	ctx.font = "30px 'メイリオ'";
+	ctx.fillText("顔グラだ！！！！！やったああああああああ",300,70);
+	ctx.font = "20px 'メイリオ'";
 	for (let i=1;i<5;i++){
-		Imgface(i,120*i-80,150)
-		ctx.fillText(`LV ${i}`,120*i-60,210);
+		Imgface(i,140*i-100,130)
+		ctx.fillText(`LV ${i}`,140*i-50,260);
 	}
+}
+
+function title(){		//タイトル
+	level = 0;
+	titledp();
 	oldc = click;
 	loop = setInterval(()=>{
 		if (oldc != click){
-			if (sqbet(offsets[0],offsets[1],40,150,40,40)){
-				level = 1;
-			}else if(sqbet(offsets[0],offsets[1],160,150,40,40)){
-				level = 2;
-			}else if(sqbet(offsets[0],offsets[1],280,150,40,40)){
-				level = 3;
-			}else if(sqbet(offsets[0],offsets[1],400,150,40,40)){
-				level = 4;
-			}
 			if (level){
-				clearInterval(loop);
-				maingamesetting(level)
+				if (sqbet(offsets[0],offsets[1],240,210,120,40)){
+					pl = 1;
+				}else if(sqbet(offsets[0],offsets[1],240,270,120,40)){
+					pl = -1;
+				}else{
+					level = 0;
+					titledp();
+				}
+				if (level){
+					clearInterval(loop);
+					maingamesetting(level)
+				}
+			}else{
+				if (sqbet(offsets[0],offsets[1],40,130,100,100)){
+					level = 1;
+				}else if(sqbet(offsets[0],offsets[1],180,130,100,100)){
+					level = 2;
+				}else if(sqbet(offsets[0],offsets[1],320,130,100,100)){
+					level = 3;
+				}else if(sqbet(offsets[0],offsets[1],460,130,100,100)){
+					level = 4;
+				}
+				if (level){
+					ctx.fillStyle = "#EEC";
+					ctx.fillRect(200,30,200,300);
+					Imgface(level,250,60)
+					ctx.strokeStyle = "#440";
+					ctx.strokeRect(240,210,120,40);
+					ctx.strokeRect(240,270,120,40);
+					ctx.fillStyle = "#440";
+					ctx.textAlign = "center";
+					ctx.font = "20px 'メイリオ'";
+					ctx.fillText(`LV ${level}`,300,190);
+					ctx.font = "30px 'メイリオ'";
+					ctx.fillText("先手(黒)",300,240);
+					ctx.fillText("後手(白)",300,300);
+				}
 			}
 			oldc = click;
 		}
@@ -118,18 +148,18 @@ function koma(){
 	for (let i=0;i<80;i++){
 		switch (field[i]){
 			case -1:
-				Sc1.add(i+10,[imgpi,1,i%10*40+40,div(i,10)*40+20]);
+				Sc1.add(i+10,[imgpi,1,i%10*40+100,div(i,10)*40+20]);
 				break;
 			case 1:
-				Sc1.add(i+10,[imgpi,0,i%10*40+40,div(i,10)*40+20]);
+				Sc1.add(i+10,[imgpi,0,i%10*40+100,div(i,10)*40+20]);
 				break
+			case 0:
+				Sc1.remove(i+10);
 		}
 	}
 }
 
 function maingamesetting(level){		//初期設定
-	ctx.fillStyle = "#484";
-	ctx.fillRect(0,0,480,360);
 	Sc1 = new Scene();
 	
 	field = new Array(80).fill(0);
@@ -139,10 +169,11 @@ function maingamesetting(level){		//初期設定
 	field[45] = -1
 	koma();
 	
-	Sc1.add(0,[imgbo,80,20]);
-	Sc1.add(1,[imgfa,0,20,280]);
-	Sc1.add(2,[imgfa,level,420,20]);
+	Sc1.add(0,[imgbo,140,20]);
+	Sc1.add(1,[imgfa,0,20,240]);
+	Sc1.add(2,[imgfa,level,480,20]);
 	Sc1.add(3,[imgpi,2,20,20]);
+	Sc1.add(4,[imgpi,3,20,80]);
 	Sc1.disp();
 	
 	oldc = click;
@@ -150,13 +181,8 @@ function maingamesetting(level){		//初期設定
 	times = 0;
 	gof = false;
 	endf = false;
+	kifu = []
 	
-	if (Math.random()>=0.5){
-		pl = -1
-		teki();
-	}else{
-		pl = 1
-	}
 	numbers = [2,2]
 	
 	if (level==1){
@@ -165,11 +191,28 @@ function maingamesetting(level){		//初期設定
 		fvalue = [0,30,-12,0,-1,-1,0,-12,30,0,0,-12,-15,-3,-3,-3,-3,-15,-12,0,0,0,-3,0,-1,-1,0,-3,0,0,0,-1,-3,-1,-1,-1,-1,-3,-1,0,0,-1,-3,-1,-1,-1,-1,-3,-1,0,0,0,-3,0,-1,-1,0,-3,0,0,0,-12,-15,-3,-3,-3,-3,-15,-12,0,0,30,-12,0,-1,-1,0,-12,30,0]
 	}
 	
+	if (pl == -1){
+		teki();
+	}
 	
 	mainloop()
 }
 
+function endjudge(){
+	endf = true;
+	if (numbers[0] > numbers[1]){
+		ctx.fillText("黒の勝ちです", 490, 290);
+	}
+	if (numbers[0] < numbers[1]){
+		ctx.fillText("白の勝ちです", 490, 290);
+	}
+	if (numbers[0] == numbers[1]){
+		ctx.fillText("引き分けです", 490, 290);
+	}
+}
+
 function mainloop(){
+	kifu[times] = field.concat();
 	numbers = [0,0]
 	for(let i=0;i<80;i++){
 		switch(field[i]){
@@ -183,45 +226,28 @@ function mainloop(){
 	}
 	
 	ctx.fillStyle = "#484";
-	ctx.fillRect(0,0,480,360);
+	ctx.fillRect(0,0,600,360);
 	ctx.fillStyle = "#FFF";
+	ctx.fillRect(480,180,100,160);
+	ctx.fillStyle = "#000";
 	ctx.font = "12px 'メイリオ'";
 	ctx.textAlign = "center";
-	ctx.fillText(`time:${div(timer,60)}`, 40, 340);
+	ctx.fillText(`time:${div(timer,60)}`, 530, 330);
 	ctx.textAlign = "left";
-	ctx.fillText(`黒：${numbers[0]}`, 405, 240);
-	ctx.fillText(`白：${numbers[1]}`, 405, 255);
+	ctx.fillText(`黒：${numbers[0]} 枚`, 490, 245);
+	ctx.fillText(`白：${numbers[1]} 枚`, 490, 260);
 	
-	if (numbers[0] == 0){
-		endf = true;
-		ctx.fillText("白の勝ちです", 405, 285);
+	if (numbers[0] == 0 || numbers[1] == 0 || numbers[0]+numbers[1] == 64){
+		endjudge();
 	}
 	
-	if (numbers[1] == 0){
-		endf = true;
-		ctx.fillText("黒の勝ちです", 405, 285);
-	}
-	
-	if (numbers[0]+numbers[1] == 64){
-		endf = true;
-		if (numbers[0] > numbers[1]){
-			ctx.fillText("黒の勝ちです", 405, 285);
-		}
-		if (numbers[0] < numbers[1]){
-			ctx.fillText("白の勝ちです", 405, 285);
-		}
-		if (numbers[0] == numbers[1]){
-			ctx.fillText("引き分けです", 405, 285);
-		}
-	}
-	
-	ctx.fillText(`${times}手目`, 405, 315);
+	ctx.fillText(`${times}手目`, 490, 215);
 	switch(pl){
 		case 1:
-			ctx.fillText("あなた（黒）", 405, 330);
+			ctx.fillText("あなた（黒）", 490, 200);
 			break;
 		case -1:
-			ctx.fillText("あなた（白）", 405, 330);
+			ctx.fillText("あなた（白）", 490, 200);
 			break;
 	}
 	Sc1.disp();
@@ -232,15 +258,25 @@ function mainloop(){
 			title();
 			return;
 		}
+		if (sqbet(offsets[0],offsets[1],20,80,40,40)){
+			if (times >= 2){
+				times -= 1;
+				while (!kifu[times]){
+					times -= 1
+				}
+				field = kifu[times];
+				koma();
+				Sc1.disp();
+			}
+		}
 	}
 	
 	
 	if (okeru(1)){
 		gof = false;
 		if (oldc != click){
-			let a = div(offsets[0]-40,40)+div(offsets[1]-20,40)*10;
+			let a = div(offsets[0]-100,40)+div(offsets[1]-20,40)*10;
 			if (between(a%10,1,8)&&between(div(a,10),0,7)){
-				console.log(a)
 				if (oku(a,pl,true)){
 					teki();
 					times++
@@ -251,16 +287,7 @@ function mainloop(){
 		}
 	}else{
 		if (gof){
-			endf = true;
-			if (numbers[0] > numbers[1]){
-				ctx.fillText("黒の勝ちです", 405, 285);
-			}
-			if (numbers[0] < numbers[1]){
-				ctx.fillText("白の勝ちです", 405, 285);
-			}
-			if (numbers[0] == numbers[1]){
-				ctx.fillText("引き分けです", 405, 285);
-			}
+			endjudge();
 		}else{
 			gof = true;
 		}
