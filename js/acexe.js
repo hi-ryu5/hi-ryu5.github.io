@@ -73,7 +73,8 @@ const disp = () => {
       break
     for (let j=0;j<100;j++){
       let a = "abcdefghijklmnopqrstuvwxyz".indexOf(row[j])+1
-      ctxst.drawImage(imgbl,a%10*40,Math.floor(a/10)*40,40,40,j*40-dx,i*40-dy,40,40)
+      if (a)
+        ctxst.drawImage(imgbl,a%10*40,Math.floor(a/10)*40,40,40,j*40-dx,i*40-dy,40,40)
     }
   }
 }
