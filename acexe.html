@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>よくあるやつ</title>
+  </head>
+
+  <body>
+<h1>よくあるやつ</h1>
+<div id="game">
+  <canvas id="background" width="640" height="480"></canvas>
+  <canvas id="stage" width="640" height="480"></canvas>
+  <canvas id="dp" width="640" height="480"></canvas>
+  <canvas id="ui" width="640" height="480"></canvas>
+  <canvas id="foreground" width="640" height="480"></canvas>
+</div>
+</pre>
+<hr>
+<p>こういうやつはたいてい操作説明がない</p>
+<p>Z押せばなんとかなるよ</p>
+<p><a href="index.html">トップページ</a></p>
+<style>
+		body{
+			background-color:#ccc;
+			font:16px'MS PGothic'
+		}
+		div{
+			width: 480px;
+			height: 360px;
+			position: relative;
+			border: 2px solid black;
+		}
+  #game {
+    width: 640px;
+    height: 480px;
+    position: relative;
+    border: 2px solid black;
+  }
+
+  canvas { position: absolute; }
+  #background { z-index: 1; }
+  #stage { z-index: 2; }
+  #dp { z-index: 3; }
+  #ui { z-index: 4; }
+  #foreground { z-index: 5; }
+</style>
+    <script src="js/acexe.js"></script>
+  </body>
+</html>
