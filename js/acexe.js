@@ -11,9 +11,15 @@ const ctxfg = canvas[4].getContext('2d')
 
 const imgpl =new Image()
 const imgbl =new Image()
+const imgju =new Image()
+const imgbu =new Image()
 imgpl.src = 'pic/player3.gif'
 imgbl.src = 'pic/block2.gif'
+imgju.src = 'pic/jump.gif'
+imgbu.src = 'pic/96c77268.jpg'
 const BGM = new Audio('sound/40-1.mp3')
+const VOICE = new Audio('sound/gyaaaa_d.wav')
+BGM.volume = 0.2
 BGM.loop = true
 
 const stdata = [
@@ -53,6 +59,47 @@ const keyInputSetting = () => {
   (e) => {
     keydown[e.keyCode] = false
     keypushing[e.keyCode] = false
+  }
+  ,false)
+  
+  canvas[4].addEventListener( "touchstart",
+  function (e) {
+    let touchObject = e.changedTouches[0]
+    let clientRect = this.getBoundingClientRect()
+    let x = touchObject.pageX - (clientRect.left + window.pageXOffset)
+    let y = touchObject.pageY - (clientRect.top + window.pageYOffset)
+    console.log(x,y)
+    
+    if (520 < x && x < 600 && 380 < y && y < 460)
+      keydown[38] = true
+    else if (x<160)
+      keydown[37] = true
+    else if (x<320)
+      keydown[39] = true
+    
+  }
+  ,false)
+  
+  canvas[4].addEventListener( "touchend",
+  function (e) {
+    let touchObject = e.changedTouches[0]
+    let clientRect = this.getBoundingClientRect()
+    let x = touchObject.pageX - (clientRect.left + window.pageXOffset)
+    let y = touchObject.pageY - (clientRect.top + window.pageYOffset)
+    console.log("end",x,y)
+    
+    if (520 < x && x < 600 && 380 < y && y < 460){
+      keydown[38] = false
+      keypushing[38] = false
+    }else if (x<160){
+      keydown[37] = false
+      keypushing[37] = false
+    }
+    else if (x<320){
+      keydown[39] = false
+      keypushing[39] = false
+    }
+    
   }
   ,false)
 }
@@ -338,12 +385,19 @@ const main = () => {
   disp()
   if (pl.y > 1000){
     BGM.pause()
+    VOICE.play()
     ctxfg.fillStyle = '#000'
     ctxfg.fillRect(0,0,640,480)
-    ctxfg.fillStyle = '#FFF'
-    ctxfg.font = "30px 'sans-serif'"
-    ctxfg.textAlign = "center"
-    ctxfg.fillText(`叫び声流しつつブラクラ表示する`, 320, 240)
+    let i = 0
+    const gameover = setInterval(function(){
+      let w = Math.floor(i*5.80)
+      let h = Math.floor(i*3.26)
+      ctxfg.drawImage(imgbu,320-w,240-h,w*2,h*2)
+      if(i >= 100){
+        clearInterval(gameover)
+      }
+      i++
+    },1)
   }else
     window.requestAnimationFrame(main)
 }
@@ -358,6 +412,7 @@ const main = () => {
 // 初回処理
 const init = () => {
   window.removeEventListener('click',init,false)
+  ctxfg.drawImage(imgju,520,380)
   keyInputSetting()
   pl = new Player(40,249.9,0,0,0,0,2)
   ctxbg.fillStyle = '#FFF'
