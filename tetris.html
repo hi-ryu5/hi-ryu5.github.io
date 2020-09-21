@@ -10,12 +10,16 @@
 <h1>テトリス</h1>
 <div id="game">
   <canvas id="ui" width="480" height="480"></canvas>
-  <canvas id="main" width="480" height="480"></canvas>
 </div>
-</pre>
 <hr>
+<pre>
 Z:左回転
 X:右回転
+Shift:ホールド
+
+R:リトライ
+スペース:スマホ用パッド画像を消す
+</pre>
 <hr>
 <p><a href="index.html">トップページ</a></p>
 <style>
@@ -26,13 +30,7 @@ X:右回転
     border: 2px solid black;
   }
 
-  canvas {
-  position: absolute; 
-  image-rendering: -moz-crisp-edges;
-  image-rendering: pixelated;
-  }
   #ui { z-index: 1; }
-  #main { z-index: 2; }
 </style>
     <script src="js/tetris.js"></script>
   </body>
