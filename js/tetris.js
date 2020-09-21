@@ -280,10 +280,10 @@ class Gamefield {
     let deln=0
     let f_bgm = false
     
-    for (let i=0;i<20;i++){
+    for (let i=2;i<22;i++){
       let bl=0
       for (let j=0;j<10;j++){
-        if (this.field[i+2][j+1])
+        if (this.field[i][j+1])
           bl++
       }
       if (bl == 10){
@@ -293,9 +293,9 @@ class Gamefield {
       }
       
       if (bl && !f_bgm){
-        if (i < 4){
+        if (i < 6){
           BGM.playbackRate = 2.0
-        }else if (i < 8){
+        }else if (i < 10){
           BGM.playbackRate = 1.5
         }else{
           BGM.playbackRate = 1.0
