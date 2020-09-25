@@ -5,6 +5,12 @@
   font-display: swap;
 }
 
+
+html {
+  touch-action: manipulation;
+}
+
+
 body {
 	background-color: #ccc;
 	font-family: "aahub_light";
