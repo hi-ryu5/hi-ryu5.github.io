@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>テトリス</title>
-    <link rel="stylesheet" href="css/standard.css">
-  </head>
+<meta charset="utf-8">
+<title>テトリス</title>
+<link rel="stylesheet" href="css/standard.css">
+<style>
+#game {
+  width: 480px;
+  height: 480px;
+  position: relative;
+  border: 2px solid black;
+}
 
-  <body>
+#ui { z-index: 1; }
+</style>
+
 <h1>テトリス</h1>
 <div id="game">
-  <canvas id="ui" width="480" height="480"></canvas>
+<canvas id="ui" width="480" height="480"></canvas>
 </div>
 <hr>
 <pre>
@@ -22,16 +28,4 @@ R:リトライ
 </pre>
 <hr>
 <p><a href="index.html">トップページ</a></p>
-<style>
-  #game {
-    width: 480px;
-    height: 480px;
-    position: relative;
-    border: 2px solid black;
-  }
-
-  #ui { z-index: 1; }
-</style>
-    <script src="js/tetris.js"></script>
-  </body>
-</html>
+<script src="js/tetris.js"></script>

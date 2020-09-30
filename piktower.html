@@ -1,63 +1,57 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>piktower</title>
-		<link rel="stylesheet" href="css/standard.css">
-	</head>
+<meta charset="utf-8">
+<title>piktower</title>
+<link rel="stylesheet" href="css/standard.css">
 
-	<body>
-		<h1>ピクタワー</h1>
-		<div id="game">
-		<canvas id="chara" width="320" height="320"></canvas>
-		<canvas id="field" width="320" height="320"></canvas>
-		</div>
-		<textarea id="playlog" placeholder="プレイログ" readonly></textarea>
-		<hr>
-		<div>
-		<button>←</button><button>↑</button><button>↓</button><button>→</button>
-		<style>
-		button{
-			width: 80px;
-			height: 80px;
-			display: inline;
-			font:60px'MS PGothic';
-			-webkit-user-select:none;
-		}
-		#game {
-			width: 320px;
-			height: 320px;
-			position: relative;
-			border: 2px solid black;
-		}
+<h1>ピクタワー</h1>
+<div id="game">
+<canvas id="chara" width="320" height="320"></canvas>
+<canvas id="field" width="320" height="320"></canvas>
+</div>
+<textarea id="playlog" placeholder="プレイログ" readonly></textarea>
+<hr>
+<div>
+<button>←</button><button>↑</button><button>↓</button><button>→</button>
+<style>
+button{
+width: 80px;
+height: 80px;
+display: inline;
+font:60px'MS PGothic';
+-webkit-user-select:none;
+}
+#game {
+width: 320px;
+height: 320px;
+position: relative;
+border: 2px solid black;
+}
 
-		canvas { position: absolute; }
-		#chara { z-index: 2; }
-		#field { z-index: 1; }
-		
-		#playlog {
-			width: 318px;
-			height: 60px;
-			font:10px'MS Gothic';
-		}
-		</style>
-		<hr>
-		<details>
-		<summary>操作方法・仕様</summary>
-		<ul>
-		<li>カーソル上下左右で操作</li>
-		<li>同時押しで斜め移動</li>
-		<li>敵にぶつかると現在HPと予測ダメージが表示される</li>
-		<li>もう一度ぶつかると戦闘</li>
-		<li>Exが100溜まるとレベルが上がり、At+1される</li>
-		<li>階段を上がるとHPが100まで回復する</li>
-		</ul>
-		<p>敵を斜め移動ですり抜けられるのは仕様です</p>
-		</details>
-		<hr>
-		<p>効果音： 効果音ラボ</p>
-		<hr>
-		<p><a href="index.html">トップページ</a></p>
-		<script src="js/piktower.js"></script>
-	</body>
-</html>
+canvas { position: absolute; }
+#chara { z-index: 2; }
+#field { z-index: 1; }
+
+#playlog {
+width: 318px;
+height: 60px;
+font:10px'MS Gothic';
+}
+</style>
+<hr>
+<details>
+<summary>操作方法・仕様</summary>
+<ul>
+<li>カーソル上下左右で操作</li>
+<li>同時押しで斜め移動</li>
+<li>敵にぶつかると現在HPと予測ダメージが表示される</li>
+<li>もう一度ぶつかると戦闘</li>
+<li>Exが100溜まるとレベルが上がり、At+1される</li>
+<li>階段を上がるとHPが100まで回復する</li>
+</ul>
+<p>敵を斜め移動ですり抜けられるのは仕様です</p>
+</details>
+<hr>
+<p>効果音： 効果音ラボ</p>
+<hr>
+<p><a href="index.html">トップページ</a></p>
+<script src="js/piktower.js"></script>
