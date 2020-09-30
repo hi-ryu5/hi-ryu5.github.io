@@ -2,7 +2,6 @@
 <html lang="ja">
 
  <head>
-    <link rel="stylesheet" href="css/standard.css">
 　<!-- Firebaseライブラリを読み込む -->
   <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
 
@@ -35,10 +34,15 @@
   firebase.analytics();
 </script>
   
+  <link rel="stylesheet" href="css/standard.css">
   <style>
     ul{
-      font:16px'MS PGothic';
+      font-family: patchForAA,'ＭＳ Ｐゴシック','ＭＳＰゴシック','MSPゴシック','MS Pゴシック', 'MS PGothic', sans-serif;
+      font-size: 16px;
+      font-weight:normal;
+      line-height:18px;
     }
+    
     
     ul > li:first-child {
      color: black;
@@ -61,11 +65,12 @@
 
  <body>
 
-
+  <pre>
   <!-- チャット内容が動的に生成される部分 -->
   <ul id="jsi-board" style="list-style:none;">
     <li>chat</li>
   </ul>
+  </pre>
   
   <div>
    <!-- 投稿者 -->
@@ -83,5 +88,6 @@
 
   <!-- メッセージを送る部分 -->
   <button name="button" id="jsi-button">send</button>
+  <script type="text/javascript" src="js/patchForAA.js" charset="UTF-8"></script>
  </body>
 </html>
