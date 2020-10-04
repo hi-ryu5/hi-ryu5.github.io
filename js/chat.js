@@ -76,7 +76,8 @@ class CHAT {
     if (el.length >= 5)
       date = `${el[3]}/${dic_date[el[1]]}/${el[2]}(${dic_date[el[0]]}) ${el[4]}`
     
-    const p = />>\d+/g
+    { //安価、アドレス
+    let p = />>\d+/g
     let respar = []
     let a
     
@@ -88,6 +89,20 @@ class CHAT {
       let a = respar[i][0]
       let n = a.slice(2)
       message = message.replace(a,`<a href="#res${n}">${a}</a>`)
+    }
+    
+    p = /http:\S*/g
+    respar = []
+    
+    while (a = p.exec(message)) {
+      respar.push(a)
+    }
+    
+    for (let i=0;i<respar.length;i++){
+      let a = respar[i][0]
+      message = message.replace(a,`<a href="${a}">${a}</a>`)
+    }
+    
     }
     
     const res = document.createElement('div')
