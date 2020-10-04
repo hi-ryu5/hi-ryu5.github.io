@@ -76,11 +76,18 @@ class CHAT {
     if (el.length >= 5)
       date = `${el[3]}/${dic_date[el[1]]}/${el[2]}(${dic_date[el[0]]}) ${el[4]}`
     
-    const p = />>+/g
-    let result
+    const p = />>\d+/g
+    let respar = []
+    let a
     
-    while (result = p.exec(message)) {
-      console.log(result.index);
+    while (a = p.exec(message)) {
+      respar.push(a)
+    }
+    
+    for (let i=0;i<respar.length;i++){
+      let a = respar[i][0]
+      let n = a.slice(2)
+      message = message.replace(a,`<a href="#res${n}">${a}</a>`)
     }
     
     const res = document.createElement('div')
