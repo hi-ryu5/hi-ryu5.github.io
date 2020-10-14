@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>make10</title>
+<link rel="stylesheet" href="css/standard.css">
+
+<h1>make10</h1>
+<hr>
+<h2></h2>
+<input type="text" placeholder="空欄でスキップ" onkeydown="textEnterEvent(event.keyCode)">
+<button>回答</button><br>
+<otu></otu>
+<hr>
+<p>並べ替えは可</p>
+<p>使える文字は + - * / ( ) だけだよ</p>
+<p>当たり前のように不可能な組み合わせ(0,0,0,0とか)も出てくるので困る</p>
+<hr>
+<p><a href="index.html">トップページ</a></p>
+<script src="js/library.js"></script>
+<script src="js/make10.js"></script>
+<script>const textEnterEvent=a=>{if(13==a)document['querySelector']('button')['click']()}</script>
