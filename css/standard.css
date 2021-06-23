@@ -12,7 +12,10 @@ html {
 }
 
 body {
-  background-color: #eee;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 10px;
+  background-color: #fff0f8;
   font: 16px/1.125 aahub_light;
   -moz-text-size-adjust: none;
   -ms-text-size-adjust: 100%;
@@ -23,4 +26,10 @@ body {
 canvas {
   image-rendering: -moz-crisp-edges;
   image-rendering: pixelated;
+}
+
+header {
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 120%;
 }
